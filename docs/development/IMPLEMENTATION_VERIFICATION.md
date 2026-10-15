@@ -128,4 +128,31 @@ Local `python scripts/validate.py --wheel` passed after implementation:
   from the relocated install in Release and Debug with source headers hidden.
   Their heat maximum error was approximately `3.02247e-5`.
 
-Implementation CI evidence is appended after the Linux and Windows runs finish.
+Implementation commit: `2adfdcc260fb66240b8ea92147ceadb3ddfb7cf4`.
+Both the [branch run 38782040677](https://github.com/ScottChiuNYC/pde-solver-replication/actions/runs/38782040677)
+and [PR run 38782094694](https://github.com/ScottChiuNYC/pde-solver-replication/actions/runs/38782094694)
+passed on both platforms:
+
+| Platform | Compiler / build | C++ / Python tests | Package / consumer validation |
+| --- | --- | --- | --- |
+| Ubuntu x64 | GNU 13.3.0 / Release | 27 / 3 passed | sdist-to-wheel, isolated import, relocated Release + Debug consumer passed |
+| Windows 2022 x64 | MSVC 19.44.35229.0 / Release | 27 / 3 passed | sdist-to-wheel, isolated import, relocated Release + Debug consumer passed |
+
+The numerical acceptance records on Windows and Linux agree at the displayed
+precision in the tables above. Each platform's log records its actual source
+SHA. Windows used the dynamic CRT triplet with the expected static core; Linux
+used the static triplet. Both ports excluded Python/pybind11 and test dependencies.
+
+Successful workflow artifacts contain the native wheel and sdist:
+
+- [Linux packages](https://github.com/ScottChiuNYC/pde-solver-replication/actions/runs/38782040677/artifacts/11996312802):
+  `pde_software_replication-0.1.0-cp312-cp312-linux_x86_64.whl` and sdist.
+- [Windows packages](https://github.com/ScottChiuNYC/pde-solver-replication/actions/runs/38782040677/artifacts/11995643885):
+  `pde_software_replication-0.1.0-cp312-cp312-win_amd64.whl` and sdist.
+
+No unresolved frozen requirements, owner decisions or validation/tooling blockers
+remain. The implementation is ready for independent numerical review in
+[PR #15](https://github.com/ScottChiuNYC/pde-solver-replication/pull/15); it has not
+been merged. Supported scope remains the frozen one-dimensional uniform-grid
+Dirichlet/theta family; no general nonsmooth-data accuracy or arbitrary-system
+stability guarantee is added.
