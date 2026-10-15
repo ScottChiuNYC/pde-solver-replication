@@ -43,7 +43,7 @@ if(NOT installed)
     message(FATAL_ERROR "Package config escapes the install: ${config_path}")
 endif()
 
-add_executable(consumer main.cpp)
+add_executable(consumer main.cpp solver_probe.cpp)
 target_link_libraries(consumer PRIVATE ${library_target})
 enable_testing()
 add_test(NAME consumer COMMAND consumer)
