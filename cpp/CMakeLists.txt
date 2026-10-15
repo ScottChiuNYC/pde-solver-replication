@@ -4,7 +4,7 @@ project(pde_software_replication_core VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-file(GLOB CORE_SOURCES CONFIGURE_DEPENDS src/*.cpp)
+file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 add_library(pde_software_replication_core_static STATIC ${CORE_SOURCES})
 set_target_properties(
     pde_software_replication_core_static

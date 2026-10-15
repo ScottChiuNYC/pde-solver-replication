@@ -77,7 +77,7 @@ Headers consumed by another C++ target or by bindings belong under this public i
 
 Production C++ implementation belongs under `cpp/src/`.
 
-The baseline `cpp/CMakeLists.txt` discovers top-level `cpp/src/*.cpp`. If implementation introduces nested source directories or a different target decomposition, update CMake explicitly; do not assume nested files are discovered automatically.
+The baseline `cpp/CMakeLists.txt` recursively discovers `cpp/src/**/*.cpp` (including top-level sources) with `GLOB_RECURSE CONFIGURE_DEPENDS`. Nested C++ implementation directories require no CMake source-list changes. If implementation introduces a different target decomposition, update CMake explicitly. Keep unrelated `.cpp` files outside `cpp/src/`.
 
 ### 3.3 Python bindings
 
