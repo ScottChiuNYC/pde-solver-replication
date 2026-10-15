@@ -1,0 +1,14 @@
+# Changes here are overwritten by Copier. Do not edit manually.
+_commit: 67630a4
+_src_path: https://github.com/ScottChiuNYC/copier-pypackage-cpp.git
+author_email: you@example.com
+author_name: Your Name
+cmake_min_version: '3.25'
+cpp_standard: '17'
+description: Infrastructure skeleton for the PDE software replication experiment.
+module_name: pde_software_replication
+project_name: PDE Software Replication
+project_slug: pde-solver-replication
+python_version: '>=3.12'
+vcpkg_port_name: pde-software-replication-core
+version: 0.1.0
