@@ -93,8 +93,14 @@ TEST(Grid, OwnsDomainAndUsesExactEndpoints) {
     EXPECT_EQ(grid.x(7), 1.1);
     EXPECT_EQ(grid.t(0), 0.2);
     EXPECT_EQ(grid.t(9), 0.9);
-    EXPECT_EQ(grid.x(3), -0.3 + 3.0 * grid.dx());
-    EXPECT_EQ(grid.t(4), 0.2 + 4.0 * grid.dt());
+    // Match the contract's separately rounded binary64 operations. A fused
+    // reference expression can differ by one ULP on an FMA-enabled target.
+    volatile double xOffset = 3.0 * grid.dx();
+    volatile double tOffset = 4.0 * grid.dt();
+    const double expectedX = -0.3 + xOffset;
+    const double expectedT = 0.2 + tOffset;
+    EXPECT_EQ(grid.x(3), expectedX);
+    EXPECT_EQ(grid.t(4), expectedT);
     EXPECT_EQ(grid.domain().xR, 1.1);
     EXPECT_THROW(grid.x(8), std::runtime_error);
     EXPECT_THROW(grid.t(10), std::runtime_error);

@@ -1,5 +1,6 @@
 #include <pde_software_replication_core/PDE.h>
 #include <cmath>
+#include <limits>
 
 double heatProbe() {
     const double pi = std::acos(-1.0);
@@ -9,8 +10,13 @@ double heatProbe() {
     pde.initial = [pi](double, double x) { return std::sin(pi * x); };
     pde.boundaryL = pde.boundaryR = [](double, double) { return 0.0; };
     const auto result = PDE::makeSolver1D(grid, pde).solve();
+    if (result.size() != grid.nx()) return std::numeric_limits<double>::infinity();
     double error = 0.0;
-    for (std::size_t i = 0; i < grid.nx(); ++i)
-        error = std::max(error, std::abs(result[i] - std::exp(-pi * pi * domain.t1) * std::sin(pi * grid.x(i))));
+    for (std::size_t i = 0; i < grid.nx(); ++i) {
+        const double difference = result[i] -
+            std::exp(-pi * pi * domain.t1) * std::sin(pi * grid.x(i));
+        if (!std::isfinite(difference)) return std::numeric_limits<double>::infinity();
+        error = std::max(error, std::abs(difference));
+    }
     return error;
 }
