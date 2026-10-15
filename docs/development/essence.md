@@ -1,5 +1,14 @@
 # 1D Parabolic PDE Solver Essence
 
+<!-- ICC-FREEZE-PROVENANCE:BEGIN -->
+Status: **FROZEN / IMPLEMENTATION_READY**
+
+- Audited authority commit: `23c0e26209bfd3f992f556dbc6ad97822ca2730b`
+- Audited Essence blob: `4c88b6656bba9adc71907cadaf4de1da8d64f3a9`
+- Latest reconciled PASS: [formal round 2](https://github.com/ScottChiuNYC/pde-solver-replication/issues/13)
+- Unresolved owner decisions: **0**
+<!-- ICC-FREEZE-PROVENANCE:END -->
+
 ## 1. Scope and Project Boundary
 
 Provide a header-only C++17 library for
