@@ -1,6 +1,54 @@
 # pde_software_replication
 
-Poetry + pybind11 + CMake + vcpkg + GoogleTest + pytest.
+A header-only C++17 solver for one-dimensional parabolic PDEs on uniform grids,
+with Dirichlet boundaries and the theta method for every finite theta in
+`[0.5, 1]`. Default theta `0.5` is Crank–Nicolson; theta `1` is backward Euler.
+The numerical core uses only the standard library and installs through the
+existing CMake/vcpkg package. Poetry, pybind11, GoogleTest and pytest retain
+the generated build and package validation paths.
+
+## Solver usage and behavior
+
+```cpp
+#include <pde_software_replication_core/PDE.h>
+#include <cmath>
+
+PDE::Domain1D domain(0.0, 1.0, 0.0, 0.1);
+PDE::Grid1D grid(domain, 101, 1000);
+PDE::PDE1D pde;
+const double pi = std::acos(-1.0);
+pde.initial = [pi](double, double x) { return std::sin(pi * x); };
+pde.boundaryL = pde.boundaryR = [](double, double) { return 0.0; };
+auto solver = PDE::makeSolver1D(grid, pde);
+auto finalValues = solver.solve();
+```
+
+Callbacks take `(t, x)`. The defaults are diffusion `1` and advection, reaction,
+and source `0`; initial and both boundary callbacks must be supplied. Spatial
+derivatives are centered in non-divergence form. Every step uses endpoint
+averages of diffusion, advection and reaction, and theta-weighted source data.
+Boundary data override initial values at the corners without sampling the
+initial callback there. The returned array owns only final-time values.
+
+`solver` retains references to `grid` and `pde`; both must outlive it. Updates
+between solves are observed. Repeated solves hold no trajectory or cache.
+Concurrent solves require unchanged configurations and thread-safe callbacks;
+concurrent setters are unsupported. Use binary64 round-to-nearest arithmetic
+with gradual underflow and normal finite checks (no fast-math mode).
+
+The Thomas solver uses no pivoting and checks reduced pivots against their
+original row scale. It preserves coefficients and commits RHS changes only on
+success. Invalid configuration, shape, samples, pivots and generated arithmetic
+throw `std::runtime_error`; user callback exceptions propagate unchanged.
+General finite advection and reaction are admitted, with no universal accuracy
+or stability guarantee. Neumann/Gamma boundaries and a Python solver interface
+are outside the frozen scope.
+
+The authoritative domain specification is
+[`docs/development/essence.md`](docs/development/essence.md). Numerical tests
+print `ACCEPTANCE` JSON records with each grid, theta, error, pairwise rate,
+compiler/build identity and source revision. See the implementation verification
+report in `docs/development/IMPLEMENTATION_VERIFICATION.md` for measured results.
 
 ## Reproducible setup and validation
 
@@ -36,6 +84,12 @@ The pybind extension is emitted directly into `src/pde_software_replication` on 
 ## Continuous integration
 
 Pushing this project to GitHub automatically runs `.github/workflows/build-and-test.yml` on Windows and Linux. Pull requests and manual runs also trigger it. The workflow invokes `python scripts/bootstrap.py` and `python scripts/validate.py --wheel`; those scripts build and test the project, validate the sdist/wheel, and check that `pkgconf` was neither installed nor acquired.
+
+Successful runs upload the native wheel and source distribution as
+`pde-packages-Linux` and `pde-packages-Windows`. C++ acceptance also compiles each
+public domain header independently. The relocated C++ consumer uses the solver
+from two translation units in both Debug and Release while source headers are
+hidden.
 
 ## Installable C++ library
 
