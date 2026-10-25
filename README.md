@@ -182,3 +182,16 @@ This skeleton was generated with Copier 9.19.1 from the untagged template commit
 `67630a4d60c57ad89142cebd99b5c2e6da01f17a`, explicitly pinned with `--vcs-ref`.
 See [initialization notes](docs/development/INITIALIZATION.md) for the copy command,
 project values, and validation results. No PDE functionality has been added.
+## Infrastructure provenance
+
+This project composes two independent Copier overlays:
+
+- `.copier-answers.pypackage-cpp.yml` — Python/C++ build, packaging, dependency, test, and CI skeleton;
+- `.copier-answers.art.yml` — agent skill routing and repository-PDF publication infrastructure.
+
+For the canonical repository map, ownership boundaries, CodeBinder/GHCR dependency pinning, review-PDF design, rollout/rollback playbooks, and cold-start checklist, see:
+
+https://github.com/ScottChiuNYC/agentic-repo-template/blob/main/docs/ecosystem-architecture.md
+
+The project-local `docs/development/PROJECT_SKELETON_CONTRACT.md` remains the authority for build/package/layout conventions. Domain implementation authority remains the applicable frozen Essence and its audit/C2C evidence.
+
